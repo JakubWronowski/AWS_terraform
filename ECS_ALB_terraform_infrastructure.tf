@@ -4,7 +4,7 @@
 
 # Define your provider
 provider "aws" {
-  region = "eu-west-1" # Enter your desired AWS region
+  region = "......." # Enter your desired AWS region
 }
 
 # Create a VPC 
@@ -22,13 +22,13 @@ resource "aws_internet_gateway" "ecs_igw" {
 resource "aws_subnet" "ecs_subnet_1" {
   vpc_id            = aws_vpc.ecs_vpc.id
   cidr_block        = "10.0.0.0/24" # Enter your desired subnet CIDR block(That's an example, you can change it)
-  availability_zone = "eu-west-1a"  # Enter your desired availability zone(That's an example, you can change it)
+  availability_zone = "....."  # Enter your desired availability zone(That's an example, you can change it)
 }
 
 resource "aws_subnet" "ecs_subnet_2" {
   vpc_id            = aws_vpc.ecs_vpc.id
   cidr_block        = "10.0.1.0/24" # Enter your desired subnet CIDR block for subnet 2(That's an example, you can change it)
-  availability_zone = "eu-west-1b"  # Enter your desired availability zone for subnet 2(That's an example, you can change it)
+  availability_zone = "....."  # Enter your desired availability zone for subnet 2(That's an example, you can change it)
 }
 
 
