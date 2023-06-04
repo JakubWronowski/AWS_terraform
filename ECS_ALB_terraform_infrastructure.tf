@@ -1,16 +1,15 @@
 
-#Feel free to make changes, comment, I'm eager to learn ;)
 
 
 # Define your provider
 provider "aws" {
-  region = "......." # Enter your desired AWS region
+  region = "......." # 
 }
 
 # Create a VPC 
 resource "aws_vpc" "ecs_vpc" {
-  cidr_block = "10.0.0.0/16" # Enter your desired VPC CIDR block
-  # Customize other VPC options as needed
+  cidr_block = "10.0.0.0/16" 
+  
 }
 
 # Create an internet gateway and attach it to the VPC
@@ -21,15 +20,14 @@ resource "aws_internet_gateway" "ecs_igw" {
 # Create a public subnets for the ALB
 resource "aws_subnet" "ecs_subnet_1" {
   vpc_id            = aws_vpc.ecs_vpc.id
-  cidr_block        = "10.0.0.0/24" # Enter your desired subnet CIDR block(That's an example, you can change it)
-  availability_zone = "....."  # Enter your desired availability zone(That's an example, you can change it)
+  cidr_block        = "10.0.0.0/24" 
+  availability_zone = "....."  
 }
 
 resource "aws_subnet" "ecs_subnet_2" {
   vpc_id            = aws_vpc.ecs_vpc.id
-  cidr_block        = "10.0.1.0/24" # Enter your desired subnet CIDR block for subnet 2(That's an example, you can change it)
-  availability_zone = "....."  # Enter your desired availability zone for subnet 2(That's an example, you can change it)
-}
+  cidr_block        = "10.0.1.0/24" 
+  availability_zone = "....."  
 
 
 # Create a security group for the ALB
@@ -41,18 +39,18 @@ resource "aws_security_group" "ecs_alb_sg" {
 
   # Inbound rules
   ingress {
-    from_port   = 80 # Allow incoming HTTP traffic
+    from_port   = 80 
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]   # Allow access from any source (you can restrict it to specific IP ranges if you need it)
+    cidr_blocks = ["0.0.0.0/0"]  
   }
 
   # Outbound rules
   egress {
-    from_port   = 0 # Allow all outbound traffic
+    from_port   = 0 
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"] # Allow access to any destination (you can restrict it to specific IP ranges if needed)
+    cidr_blocks = ["0.0.0.0/0"] 
   }
 }
 # You can add additional inbound and outbound rules as required
@@ -71,8 +69,8 @@ resource "aws_lb" "ecs_alb" {
 
 # Create a target group for your ECS service
 resource "aws_lb_target_group" "ecs_tg" {
-  name     = "ecs-tg" # Enter a name for your target group
-  port     = 80       # Enter the port your service listens on
+  name     = "ecs-tg"
+  port     = 80       
   protocol = "HTTP"
   vpc_id   = aws_vpc.ecs_vpc.id
 
@@ -88,26 +86,26 @@ resource "aws_ecs_cluster" "ecs_cluster" {
 
 # Create a launch template for the ECS instances
 resource "aws_launch_template" "ecs_launch_template" {
-  name_prefix   = "ecs-lt"                # Enter a name prefix for your launch template
-  image_id      = "ami-082af980f9f5514f8" # Enter the ID of your desired ECS optimized AMI
-  instance_type = "t2.micro"              # Enter your desired instance type
+  name_prefix   = "ecs-lt"                
+  image_id      = "ami-082af980f9f5514f8" 
+  instance_type = "t2.micro"              
 
   # Customize other launch template options as needed
 }
 
 # Create an autoscaling group for the ECS instances
 resource "aws_autoscaling_group" "ecs_asg" {
-  name                = "ecs-asg"                                                # Enter a name for your autoscaling group
-  desired_capacity    = 2                                                        # Enter your desired number of instances
-  min_size            = 2                                                        # Enter your minimum number of instances
-  max_size            = 4                                                        # Enter your maximum number of instances
-  vpc_zone_identifier = [aws_subnet.ecs_subnet_1.id, aws_subnet.ecs_subnet_2.id] # Enter the subnet ID(s) where instances should be launched
-  target_group_arns   = [aws_lb_target_group.ecs_tg.arn]                         # Specify the ARN of the target group(s) for the instances
+  name                = "ecs-asg"                                               
+  desired_capacity    = 2                                                        
+  min_size            = 2                                                        
+  max_size            = 4                                                       
+  vpc_zone_identifier = [aws_subnet.ecs_subnet_1.id, aws_subnet.ecs_subnet_2.id] 
+  target_group_arns   = [aws_lb_target_group.ecs_tg.arn]                         
 
   # Launch Template Configuration
   launch_template {
-    id      = aws_launch_template.ecs_launch_template.id # Specify the ID of the launch template
-    version = "$Latest"                                  # Use the latest version of the launch template
+    id      = aws_launch_template.ecs_launch_template.id 
+    version = "$Latest"                                  
   }
 
   # Customize other autoscaling group options as needed
